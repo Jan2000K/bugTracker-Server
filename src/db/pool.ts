@@ -1,4 +1,3 @@
-require("dotenv").config();
 import {PoolClient } from "pg";
 
 const {Pool} = require("pg")
@@ -10,5 +9,6 @@ const pool:PoolClient = new Pool({
     password: process.env.DB_PASS,
     port: process.env.DB_PORT,
   })
+
 
 module.exports = pool

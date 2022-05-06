@@ -1,7 +1,7 @@
-
-require("dotenv").config()
+import 'dotenv/config'
 
 import { Express, json, Application } from "express"
+import project from "./db/project";
 
 const session = require("express-session");
 const express = require("express");

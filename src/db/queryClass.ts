@@ -1,7 +1,7 @@
 import { DatabaseError, PoolClient, QueryResult } from "pg";
 
 
-const pool: PoolClient = require("../pool");
+const pool: PoolClient = require("./pool");
 
 export class pgQuery {
   sql: string;
@@ -12,6 +12,7 @@ export class pgQuery {
   }
   exec = async (): Promise<queryReturn> => {
     let queryRes!: queryReturn;
+
     await pool
       .query(this.sql, this.val)
       .then((res: QueryResult) => {
@@ -28,6 +29,7 @@ export class pgQuery {
         }
       })
       .catch((err: DatabaseError) => {
+        console.log(err)
         queryRes = {
           err: true,
           data: err,
