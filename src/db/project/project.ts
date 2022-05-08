@@ -1,5 +1,6 @@
-import { DatabaseError, QueryResult } from "pg"
-import { pgQuery } from "./queryClass"
+import { DatabaseError, QueryArrayResult, QueryResult, QueryResultRow } from "pg"
+import { pgQuery } from "../queryClass"
+import { getProjectByIDs } from "./queries"
 
 export default class project {
     id:number
@@ -16,24 +17,33 @@ export default class project {
         this.bugStats = this.calculateBugStats()
     }
 
-    save = async ():Promise<Boolean>=>{
-        var success = true
+    save = async ():Promise<queryReturn>=>{
+        let result!:queryReturn
         if(this.id===0){
-            let result:queryReturn =await new pgQuery('INSERT INTO public."Project"("name") VALUES ($1);',[this.name]).exec()
-            if(result.err){
-                success = false
-            }
+            result=await new pgQuery('INSERT INTO public."Project"("name") VALUES ($1);',[this.name]).exec()
+
         }
-        return success
+        else{
+            
+        }
+        return result
 
     }
 
-    static load=(arrayOfIDs:number[]):project[]|boolean=>{
-        var success = true
-        /*
-        SELECT * FROM public."Project"
-        WHERE "projectID" IN (12);
-        */
+    static load=async(arrayOfIDs:number[])=>{
+        let res:queryReturn = await getProjectByIDs(arrayOfIDs)
+        let projectArray:project[] = []
+        if(res.data===null){
+            return projectArray
+        }
+        else{
+            /*
+            Fill projectArray with query Data
+            */
+            
+        }
+
+        
 
     }
 
@@ -43,9 +53,8 @@ export default class project {
 
     static getAllProjects = ()=>{
 
+
     }
-
-
 
 
     calculateBugStats = ()=>{

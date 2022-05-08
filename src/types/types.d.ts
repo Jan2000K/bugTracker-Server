@@ -40,6 +40,17 @@ interface bug{
     note:string,
 }
 
+interface projectQueryReturn{
+  projectID:number,
+  projectName:string,
+  bugID:number,
+  bugName:string,
+  severity:bugSeverity,
+  status:bugStatus,
+  note:null | string
+}
+
+
 
 interface bugStats{
     open:number,

@@ -1,8 +1,8 @@
 import 'dotenv/config'
 
 import { Express, json, Application } from "express"
-import project from "./db/project";
-
+import project from "./db/project/project";
+import { pgQuery } from './db/queryClass';
 const session = require("express-session");
 const express = require("express");
 
@@ -11,6 +11,10 @@ const port = process.env.PORT || 5000
 
 app.use(express.json())
 
+setTimeout(() => {
+
+    const ff = project.load([1])
+}, 200);
 
 
 app.listen(port, () => console.log("Server is runnning on port " + port));
