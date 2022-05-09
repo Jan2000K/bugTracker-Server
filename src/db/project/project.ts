@@ -1,7 +1,7 @@
 import { DatabaseError, QueryArrayResult, QueryResult, QueryResultRow } from "pg"
 import Bug from "../bug"
 import { pgQuery } from "../queryClass"
-import { getProjectByIDs } from "./queries"
+import { allProjects, getProjectByIDs } from "./queries"
 
 export default class Project {
     id:number
@@ -65,7 +65,7 @@ export default class Project {
                 //get first project in array
                 const firstProj = tempArr[0]
                 //create a new project with queried data
-                const generatedProject = new Project(firstProj.projectName,bugList)
+                let generatedProject = new Project(firstProj.projectName,bugList)
                 //set project ID
                 generatedProject.id = firstProj.projectID
                 projectArray.push(generatedProject)
@@ -74,11 +74,61 @@ export default class Project {
         }
     }
 
+
     static delete = (arrayOfIDs:number[])=>{
+        
+
 
     }
 
-    static getAllProjects = ()=>{
+    static getAllProjects = async()=>{ 
+        let res:queryReturn = await allProjects()
+        let arrayOfIDs:number[] = []
+        let projectArray:project[] = []
+        if(res.data===null){
+            return projectArray
+        }
+        else{
+            
+            let projectsData = res.data as projectQueryReturn[]
+            for(let y=0;y<projectsData.length;y++){
+                if(!arrayOfIDs.includes(projectsData[y].projectID)){
+                    arrayOfIDs.push(projectsData[y].projectID)
+                }
+            }
+            //Loop through all results
+            for(let i=0;i<arrayOfIDs.length;i++){
+                //Create a temp array in which there is only 1 project
+                let tempArr = projectsData.filter(
+                    (project)=>{
+                        if(project.projectID===arrayOfIDs[i]){
+                            return true
+                        }
+                    }
+                )
+                //Create a new bugList in which the bugs for the curr project will be stored
+                let bugList:bug[] = []
+                //Loop through all results
+                for(let x=0;x<tempArr.length;x++){
+                    let element = tempArr[x]
+                    let note:string = element.note ||""
+                    //Create a new instance of a Bug with data recived from the query
+                    let bugInstance = new Bug(element.bugName,element.status,element.severity,note)
+                    //set the id of Bug
+                    bugInstance.id = element.bugID
+                    bugList.push(bugInstance)
+                }
+                //get first project in array
+                const firstProj = tempArr[0]
+                //create a new project with queried data
+                let generatedProject = new Project(firstProj.projectName,bugList)
+                //set project ID
+                generatedProject.id = firstProj.projectID
+                projectArray.push(generatedProject)
+            }
+            console.log(projectArray)
+            return projectArray            
+        }
 
 
     }

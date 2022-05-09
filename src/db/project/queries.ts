@@ -26,3 +26,7 @@ export async function getProjectByIDs(arrayOfIDs: number[]) {
         arrayOfIDs
       ).exec();
 }
+
+export async function deleteProjectsByIDs(arrayOfIDs:number[]):Promise<boolean>{
+    
+}

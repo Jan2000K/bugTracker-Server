@@ -13,7 +13,7 @@ app.use(express.json())
 
 setTimeout(() => {
 
-    const ff = Project.load([14,15])
+    const ff = Project.getAllProjects()
 }, 200);
 
 
