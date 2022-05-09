@@ -1,7 +1,7 @@
 import { DatabaseError, QueryArrayResult, QueryResult, QueryResultRow } from "pg"
-import Bug from "../bug"
-import { pgQuery } from "../queryClass"
-import { allProjects, getProjectByIDs } from "./queries"
+import Bug from "../bug/bug"
+
+import { allProjects, deleteProjectsByIDs, getProjectByIDs, saveProjectData, updateProjectData } from "./queries"
 
 export default class Project {
     id:number
@@ -17,23 +17,21 @@ export default class Project {
         this.bugs = bugs
         this.bugStats = this.calculateBugStats()
     }
-
+    
     save = async ():Promise<queryReturn>=>{
         let result!:queryReturn
         if(this.id===0){
-            result=await new pgQuery('INSERT INTO public."Project"("name") VALUES ($1);',[this.name]).exec()
-
+         result = await saveProjectData(this)
         }
         else{
-            
+        result = await updateProjectData(this)
         }
         return result
-
     }
 
     static load=async(arrayOfIDs:number[])=>{
         let res:queryReturn = await getProjectByIDs(arrayOfIDs)
-        let projectArray:project[] = []
+        let projectArray:Project[] = []
         if(res.data===null){
             return projectArray
         }
@@ -74,11 +72,9 @@ export default class Project {
         }
     }
 
-
-    static delete = (arrayOfIDs:number[])=>{
-        
-
-
+    static delete = async(arrayOfIDs:number[])=>{
+     let res = await deleteProjectsByIDs(arrayOfIDs)
+     return res
     }
 
     static getAllProjects = async()=>{ 
@@ -126,7 +122,6 @@ export default class Project {
                 generatedProject.id = firstProj.projectID
                 projectArray.push(generatedProject)
             }
-            console.log(projectArray)
             return projectArray            
         }
 
