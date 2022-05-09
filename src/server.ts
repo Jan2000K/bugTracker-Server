@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 import { Express, json, Application } from "express"
-import project from "./db/project/project";
+import Project from "./db/project/project";
 import { pgQuery } from './db/queryClass';
 const session = require("express-session");
 const express = require("express");
@@ -13,7 +13,7 @@ app.use(express.json())
 
 setTimeout(() => {
 
-    const ff = project.load([1])
+    const ff = Project.load([14,15])
 }, 200);
 
 
