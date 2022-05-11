@@ -33,14 +33,8 @@ export async function deleteProjectsByIDs(arrayOfIDs: number[]) {
   let queryString = `DELETE FROM public."Project" WHERE "projectID" = $1;`
   for (let i = 0; i < arrayOfIDs.length; i++) {
     let res: queryReturn = await new pgQuery(queryString, [arrayOfIDs[i]]).exec()
-    if (res.err) {
-      return res
-    }
-  }
-  return {
-    err: false,
-    data: `Deleted projects with IDs: ${arrayOfIDs}`
-  }
+  return true
+}
 }
 
 export async function saveProjectData(project: project):Promise<queryReturn> {
