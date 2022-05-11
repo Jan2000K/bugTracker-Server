@@ -4,10 +4,8 @@ import { Request, Response } from "express";
 import session, { Session, SessionData } from "express-session";
 
 declare global {
-  type queryReturn = {
-    err: boolean;
-    data: QueryResultRow | null;
-  };
+
+
 
   type generatedUpdate = {
     sql: string;

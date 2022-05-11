@@ -18,26 +18,24 @@ export default class Project {
         this.bugStats = this.calculateBugStats()
     }
     
-    save = async ():Promise<queryReturn>=>{
-        let result!:queryReturn
+    save = async ()=>{
         if(this.id===0){
-         result = await saveProjectData(this)
+         return await saveProjectData(this)
+         
         }
         else{
-        result = await updateProjectData(this)
+        return await updateProjectData(this)
         }
-        return result
     }
 
     static load=async(arrayOfIDs:number[])=>{
-        let res:queryReturn = await getProjectByIDs(arrayOfIDs)
+        let res = await getProjectByIDs(arrayOfIDs)
         let projectArray:Project[] = []
-        if(res.data===null){
+        if(res.length===0){
             return projectArray
         }
-        else{
-            
-            let projectsData = res.data as projectQueryReturn[]
+        else{            
+            let projectsData = res
             //Loop through all results
             for(let i=0;i<arrayOfIDs.length;i++){
                 //Create a temp array in which there is only 1 project
@@ -78,15 +76,15 @@ export default class Project {
     }
 
     static getAllProjects = async()=>{ 
-        let res:queryReturn = await allProjects()
+        let res = await allProjects()
         let arrayOfIDs:number[] = []
         let projectArray:project[] = []
-        if(res.data===null){
+        if(res.length===0){
             return projectArray
         }
         else{
             
-            let projectsData = res.data as projectQueryReturn[]
+            let projectsData = res
             for(let y=0;y<projectsData.length;y++){
                 if(!arrayOfIDs.includes(projectsData[y].projectID)){
                     arrayOfIDs.push(projectsData[y].projectID)
@@ -124,11 +122,7 @@ export default class Project {
             }
             return projectArray            
         }
-
-
     }
-
-
     calculateBugStats = ()=>{
         let stats:bugStats = {open:0,highPriority:0,mediumPriority:0,lowPriority:0}
         for(let i=0;i<this.bugs.length;i++){
