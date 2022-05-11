@@ -63,11 +63,17 @@ type bugSeverity = "Low" | "Medium" | "High"
 
 
 
+interface userNoPassword{
+  userID:number,
+  username:string
+}
+
+interface user extends userNoPassword{
+  password:string
+}
   declare module "express-session" {
     interface SessionData {
-      adminID: number;
-      adminType: adminRoles;
-      memberID: number;
+      userID:number
     }
   }
 }
