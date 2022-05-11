@@ -33,7 +33,6 @@ export async function deleteProjectsByIDs(arrayOfIDs: number[]):Promise<boolean>
   let queryString = `DELETE FROM public."Project" WHERE "projectID" IN (`
   let paramd = '$'
   for (let i = 0; i < arrayOfIDs.length; i++) {
-<<<<<<< HEAD
     let paramNumber = i+1
     if(i+1===arrayOfIDs.length){
       queryString = queryString +paramd+paramNumber+');' 
@@ -44,11 +43,6 @@ export async function deleteProjectsByIDs(arrayOfIDs: number[]):Promise<boolean>
   }
   await new pgQuery(queryString,arrayOfIDs).exec()
   return true
-=======
-    let res: queryReturn = await new pgQuery(queryString, [arrayOfIDs[i]]).exec()
-  return true
-}
->>>>>>> 524ab2fb607608f2b3ebf81b9ad24925e2d03256
 }
 
 export async function saveProjectData(project: Project):Promise<Boolean> {
