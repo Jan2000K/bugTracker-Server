@@ -24,7 +24,7 @@ export default class User{
         }
         
     }
-    load = async (arrayOfIDs:number[])=>{
+    static load = async (arrayOfIDs:number[])=>{
         return await getUsersByIDs(arrayOfIDs)
     }
     static hashPassword = async (password:string)=>{
