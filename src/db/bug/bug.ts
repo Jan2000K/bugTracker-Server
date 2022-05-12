@@ -47,7 +47,6 @@ export default class Bug {
             err:false,
             data:bugArray
         }
-
     }
 
     static delete = async(arrayOfIDs:number[])=>{

@@ -71,10 +71,11 @@ interface userNoPassword{
 interface user extends userNoPassword{
   password:string
 }
-  declare module "express-session" {
-    interface SessionData {
-      userID:number
-    }
+
+}
+declare module "express-session" {
+  interface SessionData {
+    userID:number
   }
 }
 

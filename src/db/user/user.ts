@@ -1,3 +1,5 @@
+import * as bcrypt from "bcrypt"
+import {deleteUsersByIDs, getUserByName, getUsersByIDs, insertUser, updateUser} from "./queries"
 export default class User{
     id:number
     username:string
@@ -12,6 +14,34 @@ export default class User{
         this.password = password
     }
 
+    save = async ()=>{
+        if(this.id===0){
+            await insertUser(this)
+
+        }
+        else{
+            await updateUser(this)
+        }
+        
+    }
+    load = async (arrayOfIDs:number[])=>{
+        return await getUsersByIDs(arrayOfIDs)
+    }
+    static hashPassword = async (password:string)=>{
+        let hashedPass =""
+        try{
+        let genSalt = await bcrypt.genSalt(12)
+        hashedPass = await bcrypt.hash(password,genSalt)
+        }
+        catch(e){
+            throw new Error("Failure to hash a password in static User fnc hashPassword");
+            
+        }
+        return hashedPass
+    }
+    delete = async (arrayOfIDs:number[])=>{
+        await deleteUsersByIDs(arrayOfIDs)
+    }
     static validatePassword(password:string):{passed:boolean,message:string}{
         let specialChars = " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
         if(password.length<6){
@@ -21,7 +51,6 @@ export default class User{
                 message:"Password must be atleast 6 characters long!"
                 }
             )
-
         }
         let hasSpecialChars = false
         for(let i=0;i<password.length;i++){
@@ -39,5 +68,20 @@ export default class User{
             )
         }
         return {passed:true, message:"OK"}
+    }
+
+    checkAuth = async ()=>{
+        let queriedUsers = await getUserByName(this.username)
+        let firstUserPass = queriedUsers[0].password
+        let passedAuth = false
+        try{
+            if(await bcrypt.compare(this.password,firstUserPass)){
+                passedAuth = true
+            }
+        }
+        catch(e){
+            throw new Error("Failed comparing passwords in User function checkAuth")
+        }
+        return passedAuth
     }
 }
