@@ -1,4 +1,4 @@
-import { DatabaseError, QueryArrayResult, QueryResult, QueryResultRow } from "pg"
+
 import Bug from "../bug/bug"
 
 import { allProjects, deleteProjectsByIDs, getProjectByIDs, saveProjectData, updateProjectData } from "./queries"
@@ -28,7 +28,7 @@ export default class Project {
         }
     }
 
-    static load=async(arrayOfIDs:number[])=>{
+    static load=async(arrayOfIDs:number[]):Promise<Project[]>=>{
         let res = await getProjectByIDs(arrayOfIDs)
         let projectArray:Project[] = []
         if(res.length===0){
@@ -75,10 +75,10 @@ export default class Project {
      return res
     }
 
-    static getAllProjects = async()=>{ 
+    static getAllProjects = async():Promise<Project[]>=>{ 
         let res = await allProjects()
         let arrayOfIDs:number[] = []
-        let projectArray:project[] = []
+        let projectArray:Project[] = []
         if(res.length===0){
             return projectArray
         }
@@ -143,6 +143,31 @@ export default class Project {
             }  
         }
     return stats    
+    }
+
+    static isValidProject = (value:Object):boolean=>{
+        if(typeof value==="object" && typeof value!==null){
+            if(value.hasOwnProperty("id") && value.hasOwnProperty("name") && value.hasOwnProperty("bugs")){
+                let proj = value as projectNoStats
+                if(isNaN(proj.id) || proj.id<0)return false
+                if(typeof proj.name!=="string" || proj.name.length<1){
+                    return false
+                }
+                if(!Array.isArray(proj.bugs))return false
+                for(let i=0;i<proj.bugs.length;i++){
+                    if(!Bug.isValidBug(proj.bugs[i])){
+                        return false
+                    }
+                }
+            }
+            else{
+                return false
+            }
+        }
+        else{
+            return false
+        }
+        return true
     }
 
 }

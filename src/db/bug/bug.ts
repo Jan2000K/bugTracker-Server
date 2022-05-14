@@ -1,5 +1,4 @@
-import { DatabaseError } from "pg"
-import { pgQuery } from "../queryClass"
+
 import { deleteBugByIDs, getBugsByIDs, saveBug, updateBug } from "./queries"
 
 export default class Bug {
@@ -51,6 +50,34 @@ export default class Bug {
 
     static delete = async(arrayOfIDs:number[])=>{
         await deleteBugByIDs(arrayOfIDs)
+        return true
+    }
+
+    static isValidBug = (bugObj:Object):boolean=>{
+        let requiredFields = ["id","name","status","severity","note"]
+        let severity = ["Low","Medium","High"]
+        let status = ["Open","Closed","Testing"]
+        if(typeof bugObj==="object" && bugObj !==null){
+            let keys = Object.keys(bugObj)
+            for(let i=0;i<keys.length;i++){
+                if(!requiredFields.includes(keys[i])){
+                    return false
+                }               
+            }
+            const bug = bugObj as bug
+            if(isNaN(bug.id) || bug.id<0)return false            
+            if(typeof bug.name ==="string" && typeof bug.note==="string" && typeof bug.severity==="string" && typeof bug.status==="string"){
+                if(bug.name.length<1 ||bug.note.length<1){
+                    return false
+                }               
+            if(!severity.includes(bug.severity) || !status.includes(bug.status)){
+                return false
+            }
+            }
+        }
+        else{
+            return false
+        }
         return true
     }
 }

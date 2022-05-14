@@ -1,4 +1,5 @@
 import * as bcrypt from "bcrypt"
+
 import {deleteUsersByIDs, getUserByName, getUsersByIDs, insertUser, updateUser} from "./queries"
 export default class User{
     id:number

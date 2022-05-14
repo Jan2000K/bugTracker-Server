@@ -23,11 +23,14 @@ declare global {
     json: Send<this>;
   }
 
-  interface project{
-    id:number,
-    name:string,
-    bugs:bug[],
+  interface project extends projectNoStats{
     bugStats:bugStats
+}
+
+interface projectNoStats{
+  id:number,
+  name:string,
+  bugs:bug[]
 }
 
 interface bug{
@@ -78,5 +81,6 @@ declare module "express-session" {
     userID:number
   }
 }
-
-export default global
+interface idArrayRequest extends Request{
+    idArray?:number[]
+}
