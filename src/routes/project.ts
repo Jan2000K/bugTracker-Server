@@ -5,6 +5,17 @@ import { idArrayRequest } from "../types/types"
 
 const projectRouter = Router()
 
+
+projectRouter.get("/",validateIDQueryParams,async(req:idArrayRequest,res,next)=>{
+    try{
+        const projects = await Project.load(req.idArray!)
+        res.json({err:false,message:projects})
+    }
+    catch(err){
+        next(err)
+
+    }
+})
 //getAllProjects
 projectRouter.get("/",async(req,res,next)=>{
     let projectArray:Project[] = []

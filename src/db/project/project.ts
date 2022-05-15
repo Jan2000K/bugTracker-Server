@@ -90,6 +90,7 @@ export default class Project {
                     arrayOfIDs.push(projectsData[y].projectID)
                 }
             }
+            
             //Loop through all results
             for(let i=0;i<arrayOfIDs.length;i++){
                 //Create a temp array in which there is only 1 project
@@ -100,6 +101,9 @@ export default class Project {
                         }
                     }
                 )
+                if(tempArr.length===0){
+                    return projectArray
+                }
                 //Create a new bugList in which the bugs for the curr project will be stored
                 let bugList:bug[] = []
                 //Loop through all results
