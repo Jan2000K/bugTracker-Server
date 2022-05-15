@@ -1,6 +1,7 @@
 import 'dotenv/config'
 
 import { Express, json, Application } from "express"
+import { allProjects } from './db/project/queries';
 import { pgQuery } from './db/queryClass';
 import User from './db/user/user';
 import projectRouter from './routes/project';

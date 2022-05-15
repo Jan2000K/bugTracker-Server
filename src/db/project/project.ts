@@ -46,10 +46,16 @@ export default class Project {
                         }
                     }
                 )
+                if(tempArr.length===0){
+                    return projectArray
+                }
                 //Create a new bugList in which the bugs for the curr project will be stored
                 let bugList:bug[] = []
                 //Loop through all results
                 for(let x=0;x<tempArr.length;x++){
+                    if(tempArr[x].bugID===null){
+                        continue
+                    }
                     let element = tempArr[x]
                     let note:string = element.note ||""
                     //Create a new instance of a Bug with data recived from the query
@@ -108,7 +114,9 @@ export default class Project {
                 let bugList:bug[] = []
                 //Loop through all results
                 for(let x=0;x<tempArr.length;x++){
+                    
                     let element = tempArr[x]
+                    if(element.bugID===null)continue
                     let note:string = element.note ||""
                     //Create a new instance of a Bug with data recived from the query
                     let bugInstance = new Bug(element.bugName,element.status,element.severity,note)
