@@ -64,13 +64,8 @@ type bugStatus = "Open"  | "Testing" | "Closed"
 
 type bugSeverity = "Low" | "Medium" | "High"
 
-interface updateBug extends bug{
-    projectID:number
-}
 
-interface updateBugRequest extends Request{
-  bug?:updateBug
-}
+
 interface userNoPassword{
   userID:number,
   username:string
