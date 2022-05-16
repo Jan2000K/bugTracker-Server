@@ -50,6 +50,7 @@ export async function saveProjectData(project: Project):Promise<Boolean> {
     if(res.length>0){
       project.id = res[0].projectID
     }
+
   await saveBugs(project.bugs,project.id)
   return true
 }
@@ -57,6 +58,7 @@ export async function saveProjectData(project: Project):Promise<Boolean> {
 export async function updateProjectData(project:Project):Promise<Boolean> {
   await new pgQuery('UPDATE public."Project" SET "name"=$1 WHERE "projectID"=$2;', [project.name,project.id]).exec()
   await saveBugs(project.bugs,project.id)
+
   project.calculateBugStats()
   return true
 }
@@ -65,8 +67,16 @@ async function saveBugs(bugs:bug[],projectID:number):Promise<boolean>{
   //first Delete all bugs of a project
    await deleteAllBugs(projectID)
   //then add Bugs in the db from the bugs array
+  const loadedProj = await Project.load([projectID])
+  let bugIDs:number[] = []
+  for (let x=0; x<loadedProj[0].bugs.length;x++){
+      bugIDs.push(loadedProj[x].id)
+  }
   for (let i = 0; i < bugs.length; i++) {
     let currBug = bugs[i]
+    if(!bugIDs.includes(currBug.id)){
+      continue
+    }
     let singleBug = new Bug(currBug.name, currBug.status, currBug.severity, currBug.note)
     singleBug.id = currBug.id
     await singleBug.save(projectID)

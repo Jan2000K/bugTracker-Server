@@ -6,8 +6,8 @@ export default class Bug {
     name:string
     status:bugStatus
     severity:bugSeverity
-    note:string
-    constructor(name:string,status:bugStatus,severity:bugSeverity,note:string) {
+    note:string |null
+    constructor(name:string,status:bugStatus,severity:bugSeverity,note:string |null) {
         this.id=0
         if(name.length<1){
             throw new Error("Bug name empty in constructor");
@@ -37,7 +37,6 @@ export default class Bug {
         let res = await getBugsByIDs(arrayOfIDs)
         for(let x=0;x<res.length;x++){
             let item = res[x]
-            
             let tempBug = new Bug(item.name,item.status,item.severity,item.note)
             tempBug.id = item.id
             bugArray.push(tempBug)
@@ -54,22 +53,25 @@ export default class Bug {
     }
 
     static isValidBug = (bugObj:Object):boolean=>{
+        console.log(bugObj)
         let requiredFields = ["id","name","status","severity","note"]
         let severity = ["Low","Medium","High"]
         let status = ["Open","Closed","Testing"]
+        console.log("lambo")
         if(typeof bugObj==="object" && bugObj !==null){
             let keys = Object.keys(bugObj)
             for(let i=0;i<keys.length;i++){
                 if(!requiredFields.includes(keys[i])){
+                    console.log("MISSING VALUE"+keys[i])
                     return false
                 }               
             }
             const bug = bugObj as bug
             if(isNaN(bug.id) || bug.id<0)return false            
-            if(typeof bug.name ==="string" && typeof bug.note==="string" && typeof bug.severity==="string" && typeof bug.status==="string"){
-                if(bug.name.length<1 ||bug.note.length<1){
+            if(typeof bug.name ==="string" && typeof bug.note==="string"|| typeof bug.note===null && typeof bug.severity==="string" && typeof bug.status==="string"){
+                if(bug.name.length<1){
                     return false
-                }               
+                }                        
             if(!severity.includes(bug.severity) || !status.includes(bug.status)){
                 return false
             }

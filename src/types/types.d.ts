@@ -38,7 +38,7 @@ interface bug{
     name:string,
     status:bugStatus,
     severity:bugSeverity,
-    note:string,
+    note:string | null,
 }
 
 interface projectQueryReturn{
@@ -64,8 +64,13 @@ type bugStatus = "Open"  | "Testing" | "Closed"
 
 type bugSeverity = "Low" | "Medium" | "High"
 
+interface updateBug extends bug{
+    projectID:number
+}
 
-
+interface updateBugRequest extends Request{
+  bug?:updateBug
+}
 interface userNoPassword{
   userID:number,
   username:string

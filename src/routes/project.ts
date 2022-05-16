@@ -1,6 +1,6 @@
 import { Router } from "express"
 import Project from "../db/project/project"
-import {  validateIDQueryParams, validateProject } from "../middleware/validateFields"
+import {  validateIDQueryParams, validatePatchIDs, validatePostIDs, validateProject } from "../middleware/validateFields"
 import { idArrayRequest } from "../types/types"
 
 const projectRouter = Router()
@@ -27,7 +27,24 @@ projectRouter.get("/",validateIDQueryParams,async(req:idArrayRequest,res,next)=>
     }
 })
 
-projectRouter.post("/",validateProject,async(req,res,next)=>{
+/*
+Example post JSON
+{
+    "id":0,
+    "name":"projectName",
+    "bugs":[
+        {
+            "id":0,
+            "name":"bugName",
+            "status":"Open" OR "Testing" OR "Closed",
+            "severity":"Low" OR "Medium" OR "High",
+            "note":"Note here" OR NULL
+        }
+    ]
+}
+*/
+
+projectRouter.post("/",validateProject,validatePostIDs,async(req,res,next)=>{
     try{
         const body = req.body
         const project = new Project(body.name,body.bugs)
@@ -39,12 +56,19 @@ projectRouter.post("/",validateProject,async(req,res,next)=>{
     }
 })
 
-projectRouter.patch("/",validateProject,async(req,res,next)=>{
+projectRouter.patch("/",validateProject,validatePatchIDs,async(req,res,next)=>{
     try{
         const body = req.body
+        if(body.id===0){
+            res.json({err:true,message:"Project ID cannot be 0 if its being updated!"})
+        }
+        
+        else{
         const project = new Project(body.name,body.bugs)
-        project.id = req.body.id
+        project.id = body.id
+        await project.save()
         res.json({err:false,message:"Project Updated"})
+        }
     }
     catch(err){
         next(err)

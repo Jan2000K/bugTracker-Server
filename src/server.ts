@@ -4,6 +4,7 @@ import { Express, json, Application } from "express"
 import { allProjects } from './db/project/queries';
 import { pgQuery } from './db/queryClass';
 import User from './db/user/user';
+import bugRouter from './routes/bug';
 import projectRouter from './routes/project';
 process.env.NODE_ENV = 'development';
 const session = require("express-session");
@@ -19,4 +20,6 @@ app.use(express.json())
 
 app.use("/project",projectRouter)
 
+
+app.use("/bug",bugRouter)
 app.listen(port, () => console.log("Server is runnning on port " + port));

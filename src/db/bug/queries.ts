@@ -6,7 +6,7 @@ export async function saveBug(projectID:number,bugInstance:bug) {
 }
 
 export async function updateBug(bugInstance:bug){
-    await new pgQuery('UPDATE public."Bug" SET  name=$1, status$2, severity=$3, note=$4 WHERE "bugID"=$5;',[bugInstance.name,bugInstance.status,bugInstance.severity,bugInstance.note,bugInstance.id]).exec()
+    await new pgQuery('UPDATE public."Bug" SET  name=$1, status=$2, severity=$3, note=$4 WHERE "bugID"=$5;',[bugInstance.name,bugInstance.status,bugInstance.severity,bugInstance.note,bugInstance.id]).exec()
     return true
 }
 
