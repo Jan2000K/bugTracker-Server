@@ -40,7 +40,7 @@ export default class User{
         }
         return hashedPass
     }
-    delete = async (arrayOfIDs:number[])=>{
+    static delete = async (arrayOfIDs:number[])=>{
         await deleteUsersByIDs(arrayOfIDs)
     }
     static validatePassword(password:string):{passed:boolean,message:string}{
@@ -71,18 +71,42 @@ export default class User{
         return {passed:true, message:"OK"}
     }
 
-    checkAuth = async ()=>{
+    checkAuth = async ():Promise<{passed:boolean,userID?:number}>=>{
         let queriedUsers = await getUserByName(this.username)
+        if(queriedUsers.length<1){
+            return(
+                {
+                    passed:false
+                }
+            )
+        }
         let firstUserPass = queriedUsers[0].password
+        console.log(firstUserPass)
         let passedAuth = false
         try{
-            if(await bcrypt.compare(this.password,firstUserPass)){
+            console.log(this.password)
+            const bcRes = await bcrypt.compare(this.password,firstUserPass)
+            console.log(bcRes)
+            if(bcRes){
+                
                 passedAuth = true
             }
         }
         catch(e){
             throw new Error("Failed comparing passwords in User function checkAuth")
         }
-        return passedAuth
+        if(passedAuth){
+            return(
+                {
+                    passed:true,
+                    userID:queriedUsers[0].userID
+                }
+            )
+        }
+        else{
+            return(
+                {passed:false}
+            )
+        }
     }
 }

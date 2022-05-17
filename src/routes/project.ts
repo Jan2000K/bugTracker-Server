@@ -1,11 +1,12 @@
 import { Router } from "express"
 import Project from "../db/project/project"
+import { checkSession } from "../middleware/auth/auth"
 import {  validateIDQueryParams, validatePatchIDs, validatePostIDs, validateProject } from "../middleware/validateFields"
 import { idArrayRequest } from "../types/types"
 
 const projectRouter = Router()
 
-projectRouter.get("/all",async(req,res,next)=>{
+projectRouter.get("/all",checkSession,async(req,res,next)=>{
     let projectArray:Project[] = []
     try{
         projectArray = await Project.getAllProjects()
@@ -16,7 +17,7 @@ projectRouter.get("/all",async(req,res,next)=>{
     }
 })
 
-projectRouter.get("/",validateIDQueryParams,async(req:idArrayRequest,res,next)=>{
+projectRouter.get("/",checkSession,validateIDQueryParams,async(req:idArrayRequest,res,next)=>{
     try{
         const projects = await Project.load(req.idArray!)
         res.json({err:false,message:projects})
@@ -44,7 +45,7 @@ Example post JSON
 }
 */
 
-projectRouter.post("/",validateProject,validatePostIDs,async(req,res,next)=>{
+projectRouter.post("/",checkSession,validateProject,validatePostIDs,async(req,res,next)=>{
     try{
         const body = req.body
         const project = new Project(body.name,body.bugs)
@@ -56,7 +57,7 @@ projectRouter.post("/",validateProject,validatePostIDs,async(req,res,next)=>{
     }
 })
 
-projectRouter.patch("/",validateProject,validatePatchIDs,async(req,res,next)=>{
+projectRouter.patch("/",checkSession,validateProject,validatePatchIDs,async(req,res,next)=>{
     try{
         const body = req.body
         if(body.id===0){
@@ -75,7 +76,7 @@ projectRouter.patch("/",validateProject,validatePatchIDs,async(req,res,next)=>{
     }
 })
 
-projectRouter.delete("/",validateIDQueryParams,async(req:idArrayRequest,res,next)=>{
+projectRouter.delete("/",checkSession,validateIDQueryParams,async(req:idArrayRequest,res,next)=>{
     try{
         await Project.delete(req.idArray!)
         res.json({err:false,message:"Projects Deleted"})

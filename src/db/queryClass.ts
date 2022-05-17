@@ -1,7 +1,6 @@
 import { DatabaseError, PoolClient, QueryResult } from "pg";
 
-
-const pool: PoolClient = require("./pool");
+import { pool } from "./pool";
 
 export class pgQuery<T> {
   sql: string;

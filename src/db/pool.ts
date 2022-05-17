@@ -2,7 +2,7 @@ import {PoolClient } from "pg";
 
 const {Pool} = require("pg")
 
-const pool:PoolClient = new Pool({
+export const pool:PoolClient = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_DB,
@@ -11,4 +11,3 @@ const pool:PoolClient = new Pool({
   })
 
 
-module.exports = pool

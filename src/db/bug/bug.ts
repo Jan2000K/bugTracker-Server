@@ -23,9 +23,12 @@ export default class Bug {
         this.severity = severity
         this.note = note   
     }
-    save = async(projectID:number)=>{
+    save = async(projectID?:number)=>{
         if(this.id===0){
-        return await saveBug(projectID,this)
+            if(projectID===undefined){
+                throw new Error("Missing project ID for Bug creation")
+            }
+            return await saveBug(projectID,this)
         }
         else{
             return await updateBug(this)
