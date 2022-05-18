@@ -56,16 +56,14 @@ export default class Bug {
     }
 
     static isValidBug = (bugObj:Object):boolean=>{
-        console.log(bugObj)
+
         let requiredFields = ["id","name","status","severity","note"]
         let severity = ["Low","Medium","High"]
         let status = ["Open","Closed","Testing"]
-        console.log("lambo")
         if(typeof bugObj==="object" && bugObj !==null){
             let keys = Object.keys(bugObj)
             for(let i=0;i<keys.length;i++){
                 if(!requiredFields.includes(keys[i])){
-                    console.log("MISSING VALUE"+keys[i])
                     return false
                 }               
             }

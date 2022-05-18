@@ -48,6 +48,7 @@ Example post JSON
 projectRouter.post("/",checkSession,validateProject,validatePostIDs,async(req,res,next)=>{
     try{
         const body = req.body
+       
         const project = new Project(body.name,body.bugs)
         project.save()
         res.json({err:false,message:"Project saved"})

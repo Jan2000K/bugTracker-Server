@@ -123,7 +123,7 @@ export function validateBugPost(req:Request,res:Response,next:NextFunction){
             res.json({err:true,message:"Invalid keys in request object"})
         }
         else if(isNaN(body.id) || body.id!==0  || !Bug.isValidBug({id:body.id,name:body.name,status:body.status,severity:body.severity,note:body.note})){
-          res.json({err:true,message:"Invalid Bug object format"})  
+          res.json({err:true,message:"Invalid Bug object values format"})  
         }
         else if(isNaN(body.projectID) && body.projectID<1){
             res.json({err:true,message:"Invalid projectID value"})

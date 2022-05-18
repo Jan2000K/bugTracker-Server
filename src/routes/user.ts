@@ -10,7 +10,6 @@ userRouter.post("/login",validateLoginPost,isAlreadyLogged,async(req,res,next)=>
     try{
         let body = req.body
         const userAuth = await new User(body.username,body.password).checkAuth()
-        console.log(userAuth)
         if(userAuth.passed){
             req.session.userID = userAuth.userID 
             res.json({err:false,message:"Login Success"})

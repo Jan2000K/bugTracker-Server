@@ -84,9 +84,7 @@ export default class User{
         console.log(firstUserPass)
         let passedAuth = false
         try{
-            console.log(this.password)
             const bcRes = await bcrypt.compare(this.password,firstUserPass)
-            console.log(bcRes)
             if(bcRes){
                 
                 passedAuth = true
