@@ -4,7 +4,7 @@ import { deleteBugByIDs } from "../db/bug/queries";
 import { checkSession } from "../middleware/auth/auth";
 import { validateBugPost, validateBugUpdate, validateIDQueryParams } from "../middleware/validateFields";
 import { idArrayRequest } from "../types/types";
-
+const cors = require('cors')
 const bugRouter = Router()
 
 bugRouter.patch("/",checkSession,validateBugUpdate,async(req,res,next)=>{

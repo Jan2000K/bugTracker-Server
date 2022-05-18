@@ -10,7 +10,7 @@ projectRouter.get("/all",checkSession,async(req,res,next)=>{
     let projectArray:Project[] = []
     try{
         projectArray = await Project.getAllProjects()
-        res.json({projects:projectArray})
+        res.json({err:false,message:projectArray})
     }
     catch(err){
         next(err)

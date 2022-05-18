@@ -5,7 +5,7 @@ import { validateIDQueryParams, validateLoginPost } from "../middleware/validate
 import { idArrayRequest } from "../types/types";
 
 const userRouter = Router()
-
+const cors = require('cors')
 userRouter.post("/login",validateLoginPost,isAlreadyLogged,async(req,res,next)=>{
     try{
         let body = req.body
@@ -22,6 +22,10 @@ userRouter.post("/login",validateLoginPost,isAlreadyLogged,async(req,res,next)=>
     catch(err){
         next(err)
     }
+})
+
+userRouter.get("/isLogged",checkSession,(req,res)=>{
+    res.json({err:false,message:"Logged In"})
 })
 
 userRouter.post("/:key",validateLoginPost,async(req,res,next)=>{

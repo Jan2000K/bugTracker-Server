@@ -7,14 +7,16 @@ import User from './db/user/user';
 import bugRouter from './routes/bug';
 import projectRouter from './routes/project';
 import userRouter from './routes/user';
+
 const session = require("express-session");
 const express = require("express");
+const cors = require('cors')
 const pgSession = require('connect-pg-simple')(session);
 const app:Application = express()
 const port = process.env.PORT || 5000
 
 let sessionOptions:SessionOptions ={
-    store: new pgSession({
+    store: new pgSession({  
         pool:pool,
     }),
     secret:process.env.SESS_KEY as string,
@@ -26,7 +28,6 @@ let sessionOptions:SessionOptions ={
         httpOnly:true
     },
     name:"BTssid"
-
 }
   
   if (app.get('env') === 'production') {
@@ -38,7 +39,7 @@ let sessionOptions:SessionOptions ={
 
 app.use(express.json())
 
-
+app.use(cors({credentials: true,origin: 'http://localhost:3000'}))
 
 
 app.use("/project",projectRouter)
