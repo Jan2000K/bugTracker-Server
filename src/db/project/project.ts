@@ -1,7 +1,7 @@
 
 import Bug from "../bug/bug"
 
-import { allProjects, deleteProjectsByIDs, getProjectByIDs, saveProjectData, updateProjectData } from "./queries"
+import { allProjects, deleteProjectsByIDs, getProjectByIDs, saveProjectData, updateNameQuery, updateProjectData } from "./queries"
 
 export default class Project {
     id:number
@@ -26,6 +26,10 @@ export default class Project {
         else{
         return await updateProjectData(this)
         }
+    }
+
+    static updateName = async (newName:string,projectID:number)=>{
+        await updateNameQuery(newName,projectID)
     }
 
     static load=async(arrayOfIDs:number[]):Promise<Project[]>=>{

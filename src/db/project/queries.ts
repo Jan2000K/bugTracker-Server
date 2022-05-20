@@ -9,6 +9,9 @@ export async function allProjects(): Promise<projectQueryReturn[]> {
   ).exec();
 }
 
+export async function updateNameQuery(newName:string,projectID:number){
+  await new pgQuery('UPDATE public."Project" SET name=$1 WHERE "projectID"=$2',[newName,projectID]).exec()
+}
 export async function getProjectByIDs(arrayOfIDs: number[]) {
 
     let queryString =  `SELECT p."projectID", p.name "projectName", b."bugID", b.name "bugName", b.severity, b.status, b.note FROM "Project" p FULL OUTER JOIN "Bug" b  ON p."projectID" = b."projectID" WHERE p."projectID" IN (`
@@ -69,18 +72,17 @@ async function saveBugs(bugs:bug[],projectID:number):Promise<boolean>{
   //then add Bugs in the db from the bugs array
   const loadedProj = await Project.load([projectID])
   let bugIDs:number[] = []
-  for (let x=0; x<loadedProj[0].bugs.length;x++){
-      bugIDs.push(loadedProj[x].id)
+  for (let x=0; x<bugs.length;x++){
+      bugIDs.push(bugs[x].id)
   }
+  console.log(bugIDs)
   for (let i = 0; i < bugs.length; i++) {
     let currBug = bugs[i]
     if(!bugIDs.includes(currBug.id)){
       continue
     }
-    let singleBug = new Bug(currBug.name, currBug.status, currBug.severity, currBug.note)
-    singleBug.id = currBug.id
+    let singleBug = new Bug(currBug.name, currBug.status, currBug.severity, currBug.note)    
     await singleBug.save(projectID)
-
   }
   return true
 }

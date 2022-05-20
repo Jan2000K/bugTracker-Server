@@ -5,6 +5,7 @@ import { getUserByName } from "../db/user/queries";
 import { idArrayRequest } from "../types/types";
 
 export function validateProject(req:Request,res:Response,next:NextFunction){
+    
     let body = req.body
     if(!Project.isValidProject(body)){
         res.json({err:true,msg:"Posted parameters failed field validation"})

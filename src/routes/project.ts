@@ -57,6 +57,21 @@ projectRouter.post("/",checkSession,validateProject,validatePostIDs,async(req,re
         next(err)
     }
 })
+projectRouter.patch("/updateName",checkSession,async(req,res,next)=>{
+    let body = req.body
+    if(body.projectID && body.name){
+        if(isNaN(body.projectID) || typeof body.name!=="string"){
+            res.json({err:true,message:"Invalid values"})
+        }
+        else{
+            Project.updateName(body.name,body.projectID)
+            res.json({err:false,message:"Name successfully updated"})
+        }
+    }
+    else{
+        res.json({err:true,message:"Missing required keys (name, projectID)"})
+    }
+})
 
 projectRouter.patch("/",checkSession,validateProject,validatePatchIDs,async(req,res,next)=>{
     try{

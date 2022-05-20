@@ -11,7 +11,7 @@ export function isAlreadyLogged(req:Request,res:Response,next:NextFunction){
 
 export function checkSession(req:Request,res:Response,next:NextFunction){
     if(!req.session.userID){
-        res.json({err:true,messaage:"Not logged in!"})
+        res.status(401).json({err:true,messaage:"Not logged in!"})
     }
     else{
         next()
