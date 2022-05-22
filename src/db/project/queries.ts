@@ -75,7 +75,6 @@ async function saveBugs(bugs:bug[],projectID:number):Promise<boolean>{
   for (let x=0; x<bugs.length;x++){
       bugIDs.push(bugs[x].id)
   }
-  console.log(bugIDs)
   for (let i = 0; i < bugs.length; i++) {
     let currBug = bugs[i]
     if(!bugIDs.includes(currBug.id)){
