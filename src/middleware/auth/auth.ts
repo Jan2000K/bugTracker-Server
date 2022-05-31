@@ -1,4 +1,4 @@
-import { NextFunction, request, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export function isAlreadyLogged(req:Request,res:Response,next:NextFunction){
     if(req.session.userID){

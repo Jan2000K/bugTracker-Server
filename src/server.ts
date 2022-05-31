@@ -1,9 +1,8 @@
 import 'dotenv/config'
 
-import { Express, json, Application } from "express"
+import { Application } from "express"
 import { SessionOptions } from 'express-session';
 import {pool} from "./db/pool"
-import User from './db/user/user';
 import bugRouter from './routes/bug';
 import projectRouter from './routes/project';
 import userRouter from './routes/user';

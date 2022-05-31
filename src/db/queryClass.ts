@@ -1,4 +1,4 @@
-import { DatabaseError, PoolClient, QueryResult } from "pg";
+import { DatabaseError, PoolClient, QueryArrayResult, QueryResult } from "pg";
 
 import { pool } from "./pool";
 
@@ -13,8 +13,8 @@ export class pgQuery<T> {
     let queryRes!:T[]
      await pool
       .query(this.sql, this.val)
-      .then((res: QueryResult<T>) => {
-        queryRes = res.rows
+      .then((res) => {
+        queryRes = res.rows 
       })
       .catch((err: DatabaseError) => {
          throw new Error(err.message)

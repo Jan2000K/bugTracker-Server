@@ -1,7 +1,7 @@
-import e, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Bug from "../db/bug/bug";
 import Project from "../db/project/project";
-import { getUserByName } from "../db/user/queries";
+
 import { idArrayRequest } from "../types/types";
 
 export function validateProject(req:Request,res:Response,next:NextFunction){
