@@ -1,4 +1,3 @@
-
 import { deleteBugByIDs, getBugsByIDs, saveBug, updateBug } from "./queries"
 
 export default class Bug {
@@ -24,6 +23,7 @@ export default class Bug {
         this.note = note   
     }
     save = async(projectID?:number)=>{
+
         if(this.id===0){
             if(projectID===undefined){
                 throw new Error("Missing project ID for Bug creation")
@@ -44,10 +44,7 @@ export default class Bug {
             tempBug.id = item.id
             bugArray.push(tempBug)
         }
-        return{
-            err:false,
-            data:bugArray
-        }
+        return bugArray
     }
 
     static delete = async(arrayOfIDs:number[])=>{
@@ -58,24 +55,29 @@ export default class Bug {
     static isValidBug = (bugObj:Object):boolean=>{
 
         let requiredFields = ["id","name","status","severity","note"]
+        //valid values for bug severity
         let severity = ["Low","Medium","High"]
+        //valid values for bug status
         let status = ["Open","Closed","Testing"]
         if(typeof bugObj==="object" && bugObj !==null){
-            let keys = Object.keys(bugObj)
+            //gets all the keys of the object that is being validated
+            const keys = Object.keys(bugObj)
+            //Go through all the keys and if the key is not included in the required Fields, return false
             for(let i=0;i<keys.length;i++){
                 if(!requiredFields.includes(keys[i])){
                     return false
                 }               
             }
             const bug = bugObj as bug
+
             if(isNaN(bug.id) || bug.id<0)return false            
             if(typeof bug.name ==="string" && typeof bug.note==="string"|| typeof bug.note===null && typeof bug.severity==="string" && typeof bug.status==="string"){
                 if(bug.name.length<1){
                     return false
                 }                        
-            if(!severity.includes(bug.severity) || !status.includes(bug.status)){
-                return false
-            }
+                if(!severity.includes(bug.severity) || !status.includes(bug.status)){
+                    return false
+                }
             }
         }
         else{

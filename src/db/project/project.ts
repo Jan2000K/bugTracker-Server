@@ -10,7 +10,7 @@ export default class Project {
     bugStats:bugStats
     constructor(name:string,bugs:bug[]) {
         this.id = 0
-        if(name.trim().length===0){
+        if(name.length<1){
             throw new Error("Project name is empty in the constructor!");
         }
         this.name = name
@@ -33,17 +33,16 @@ export default class Project {
     }
 
     static load=async(arrayOfIDs:number[]):Promise<Project[]>=>{
-        let res = await getProjectByIDs(arrayOfIDs)
+        let queriedProjects = await getProjectByIDs(arrayOfIDs)
         let projectArray:Project[] = []
-        if(res.length===0){
+        if(queriedProjects.length===0){
             return projectArray
         }
-        else{            
-            let projectsData = res
+        else{
             //Loop through all results
             for(let i=0;i<arrayOfIDs.length;i++){
                 //Create a temp array in which there is only 1 project
-                let tempArr = projectsData.filter(
+                let tempArr = queriedProjects.filter(
                     (project)=>{
                         if(project.projectID===arrayOfIDs[i]){
                             return true
@@ -62,7 +61,7 @@ export default class Project {
                     }
                     let element = tempArr[x]
                     let note:string = element.note ||""
-                    //Create a new instance of a Bug with data recived from the query
+                    //Create a new instance of a Bug with data received from the query
                     let bugInstance = new Bug(element.bugName,element.status,element.severity,note)
                     //set the id of Bug
                     bugInstance.id = element.bugID
@@ -81,8 +80,7 @@ export default class Project {
     }
 
     static delete = async(arrayOfIDs:number[])=>{
-     let res = await deleteProjectsByIDs(arrayOfIDs)
-     return res
+     return await deleteProjectsByIDs(arrayOfIDs)
     }
 
     static getAllProjects = async():Promise<Project[]>=>{ 
@@ -93,7 +91,6 @@ export default class Project {
             return projectArray
         }
         else{
-            
             let projectsData = res
             for(let y=0;y<projectsData.length;y++){
                 if(!arrayOfIDs.includes(projectsData[y].projectID)){
@@ -114,7 +111,7 @@ export default class Project {
                 if(tempArr.length===0){
                     return projectArray
                 }
-                //Create a new bugList in which the bugs for the curr project will be stored
+                //Create a new bugList in which the bugs for the current project will be stored
                 let bugList:bug[] = []
                 //Loop through all results
                 for(let x=0;x<tempArr.length;x++){
@@ -122,7 +119,7 @@ export default class Project {
                     let element = tempArr[x]
                     if(element.bugID===null)continue
                     let note:string = element.note ||""
-                    //Create a new instance of a Bug with data recived from the query
+                    //Create a new instance of a Bug with data received from the query
                     let bugInstance = new Bug(element.bugName,element.status,element.severity,note)
                     //set the id of Bug
                     bugInstance.id = element.bugID

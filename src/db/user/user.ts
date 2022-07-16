@@ -49,7 +49,7 @@ export default class User{
             return(
                 {
                 passed:false,
-                message:"Password must be atleast 6 characters long!"
+                message:"Password must be at least 6 characters long!"
                 }
             )
         }
@@ -64,7 +64,7 @@ export default class User{
             return(
                 {
                 passed:false,
-                message:"Password must contain atleast one special character"
+                message:"Password must contain at least one special character"
                 }
             )
         }
@@ -86,7 +86,6 @@ export default class User{
         try{
             const bcRes = await bcrypt.compare(this.password,firstUserPass)
             if(bcRes){
-                
                 passedAuth = true
             }
         }

@@ -50,7 +50,7 @@ projectRouter.post("/",checkSession,validateProject,validatePostIDs,async(req,re
         const body = req.body
        
         const project = new Project(body.name,body.bugs)
-        project.save()
+        await project.save()
         res.json({err:false,message:"Project saved"})
     }
     catch(err){
@@ -64,7 +64,7 @@ projectRouter.patch("/updateName",checkSession,async(req,res,next)=>{
             res.json({err:true,message:"Invalid values"})
         }
         else{
-            Project.updateName(body.name,body.projectID)
+            await Project.updateName(body.name,body.projectID)
             res.json({err:false,message:"Name successfully updated"})
         }
     }

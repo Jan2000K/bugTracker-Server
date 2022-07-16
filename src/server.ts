@@ -12,7 +12,7 @@ const express = require("express");
 const cors = require('cors')
 const pgSession = require('connect-pg-simple')(session);
 const app:Application = express()
-const port = process.env.PORT || 5000
+const port = process.env.APP_PORT || 5005
 
 let sessionOptions:SessionOptions ={
     store: new pgSession({  
@@ -22,7 +22,7 @@ let sessionOptions:SessionOptions ={
     resave:false,
     saveUninitialized:false,
     cookie:{
-        maxAge:900000, // 15 minutes in miliseconds
+        maxAge:900000, // 15 minutes in milliseconds
         secure:false,
         httpOnly:true
     },
@@ -33,12 +33,15 @@ let sessionOptions:SessionOptions ={
     app.set('trust proxy', 1) // trust first proxy
     sessionOptions.cookie!.secure = true
   }
-  
+  else{
+      app.use(cors({credentials: true,origin: 'http://localhost:3000'}))
+  }
+
   app.use(session(sessionOptions))
 
 app.use(express.json())
 
-app.use(cors({credentials: true,origin: 'http://localhost:3000'}))
+
 
 
 app.use("/project",projectRouter)

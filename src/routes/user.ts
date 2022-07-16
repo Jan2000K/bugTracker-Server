@@ -5,7 +5,6 @@ import { validateIDQueryParams, validateLoginPost } from "../middleware/validate
 import { idArrayRequest } from "../types/types";
 
 const userRouter = Router()
-const cors = require('cors')
 userRouter.post("/login",validateLoginPost,isAlreadyLogged,async(req,res,next)=>{
     try{
         let body = req.body
@@ -32,7 +31,7 @@ userRouter.post("/:key",validateLoginPost,async(req,res,next)=>{
         let body = req.body
     if(req.params.key){
         if(req.params.key===process.env.ADMIN_KEY){
-            const newUser = new User(body.username,body.password).save()
+            await new User(body.username,body.password).save()
             res.json({err:false,message:"User created"})
         }
         else{
@@ -47,8 +46,6 @@ userRouter.post("/:key",validateLoginPost,async(req,res,next)=>{
         next(err)
     }
 })
-
-
 
 
 userRouter.delete("/:key",validateIDQueryParams,async(req:idArrayRequest,res,next)=>{

@@ -32,6 +32,7 @@ export async function deleteBugByIDs(arrayOfIDs:number[]){
 
 export async function getBugsByIDs(arrayOfIDs:number[]){
     let queryString =  `SELECT * FROM public."Bug" WHERE "bugID" IN (`
+    //Generate the IN values
     let param = "$"
     for(let i=0;i<arrayOfIDs.length;i++){
         let paramNumber = i+1
@@ -42,6 +43,7 @@ export async function getBugsByIDs(arrayOfIDs:number[]){
             queryString = queryString+param+paramNumber+","
         }
     }
+    //Generated sql string
     queryString = queryString+");"
     return await new pgQuery<bug>(
         queryString,
