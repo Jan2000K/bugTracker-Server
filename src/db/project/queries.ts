@@ -1,92 +1,104 @@
-import Bug from "../bug/bug";
-import { pgQuery } from "../queryClass";
-import Project from "./project";
+import Bug from "../bug/bug"
+import { pgQuery } from "../queryClass"
+import Project from "./project"
 
 export async function allProjects(): Promise<projectQueryReturn[]> {
-  return await new pgQuery<projectQueryReturn>(
-    'SELECT p."projectID", p.name "projectName", b."bugID", b.name "bugName", b.severity, b.status, b.note FROM "Project" p FULL OUTER JOIN "Bug" b  ON p."projectID" = b."projectID";',
-    []
-  ).exec();
+    return await new pgQuery<projectQueryReturn>(
+        'SELECT p."projectID", p.name "projectName", b."bugID", b.name "bugName", b.severity, b.status, b.note FROM "Project" p FULL OUTER JOIN "Bug" b  ON p."projectID" = b."projectID";',
+        []
+    ).exec()
 }
 
-export async function updateNameQuery(newName:string,projectID:number){
-  await new pgQuery('UPDATE public."Project" SET name=$1 WHERE "projectID"=$2',[newName,projectID]).exec()
+export async function updateNameQuery(newName: string, projectID: number) {
+    await new pgQuery(
+        'UPDATE public."Project" SET name=$1 WHERE "projectID"=$2',
+        [newName, projectID]
+    ).exec()
 }
 export async function getProjectByIDs(arrayOfIDs: number[]) {
-
-    let queryString =  `SELECT p."projectID", p.name "projectName", b."bugID", b.name "bugName", b.severity, b.status, b.note FROM "Project" p FULL OUTER JOIN "Bug" b  ON p."projectID" = b."projectID" WHERE p."projectID" IN (`
+    let queryString = `SELECT p."projectID", p.name "projectName", b."bugID", b.name "bugName", b.severity, b.status, b.note FROM "Project" p FULL OUTER JOIN "Bug" b  ON p."projectID" = b."projectID" WHERE p."projectID" IN (`
     let param = "$"
-    for(let i=0;i<arrayOfIDs.length;i++){
-        let paramNumber = i+1
-        if(i+1===arrayOfIDs.length){
-        queryString = queryString+param+paramNumber
+    for (let i = 0; i < arrayOfIDs.length; i++) {
+        let paramNumber = i + 1
+        if (i + 1 === arrayOfIDs.length) {
+            queryString = queryString + param + paramNumber
+        } else {
+            queryString = queryString + param + paramNumber + ","
         }
-        else{
-            queryString = queryString+param+paramNumber+","
+    }
+    queryString = queryString + ");"
+    return await new pgQuery<projectQueryReturn>(queryString, arrayOfIDs).exec()
+}
+
+export async function deleteProjectsByIDs(
+    arrayOfIDs: number[]
+): Promise<boolean> {
+    let queryString = `DELETE FROM public."Project" WHERE "projectID" IN (`
+    let paramd = "$"
+    for (let i = 0; i < arrayOfIDs.length; i++) {
+        let paramNumber = i + 1
+        if (i + 1 === arrayOfIDs.length) {
+            queryString = queryString + paramd + paramNumber + ");"
+        } else {
+            queryString = queryString + paramd + paramNumber + ","
         }
     }
-    queryString = queryString+");"
-    return await new pgQuery<projectQueryReturn>(
-        queryString,
-        arrayOfIDs
-      ).exec();
+    await new pgQuery(queryString, arrayOfIDs).exec()
+    return true
 }
 
-export async function deleteProjectsByIDs(arrayOfIDs: number[]):Promise<boolean> {
-  let queryString = `DELETE FROM public."Project" WHERE "projectID" IN (`
-  let paramd = '$'
-  for (let i = 0; i < arrayOfIDs.length; i++) {
-    let paramNumber = i+1
-    if(i+1===arrayOfIDs.length){
-      queryString = queryString +paramd+paramNumber+');' 
-    }
-    else{
-      queryString = queryString +paramd+paramNumber+','
-    }
-  }
-  await new pgQuery(queryString,arrayOfIDs).exec()
-  return true
-}
-
-export async function saveProjectData(project: Project):Promise<Boolean> {
-  let res = await new pgQuery<{projectID:number}>('INSERT INTO public."Project"("name") VALUES ($1) RETURNING "projectID";', [project.name]).exec()
-    if(res.length>0){
-      project.id = res[0].projectID
+export async function saveProjectData(project: Project): Promise<Boolean> {
+    let res = await new pgQuery<{ projectID: number }>(
+        'INSERT INTO public."Project"("name") VALUES ($1) RETURNING "projectID";',
+        [project.name]
+    ).exec()
+    if (res.length > 0) {
+        project.id = res[0].projectID
     }
 
-  await saveBugs(project.bugs,project.id)
-  return true
+    await saveBugs(project.bugs, project.id)
+    return true
 }
 
-export async function updateProjectData(project:Project):Promise<Boolean> {
-  await new pgQuery('UPDATE public."Project" SET "name"=$1 WHERE "projectID"=$2;', [project.name,project.id]).exec()
-  await saveBugs(project.bugs,project.id)
+export async function updateProjectData(project: Project): Promise<Boolean> {
+    await new pgQuery(
+        'UPDATE public."Project" SET "name"=$1 WHERE "projectID"=$2;',
+        [project.name, project.id]
+    ).exec()
+    await saveBugs(project.bugs, project.id)
 
-  project.calculateBugStats()
-  return true
+    project.calculateBugStats()
+    return true
 }
 
-async function saveBugs(bugs:bug[],projectID:number):Promise<boolean>{
-  //first Delete all bugs of a project
-   await deleteAllBugs(projectID)
-  //then add Bugs in the db from the bugs array
-  const loadedProj = await Project.load([projectID])
-  let bugIDs:number[] = []
-  for (let x=0; x<bugs.length;x++){
-      bugIDs.push(bugs[x].id)
-  }
-  for (let i = 0; i < bugs.length; i++) {
-    let currBug = bugs[i]
-    if(!bugIDs.includes(currBug.id)){
-      continue
+async function saveBugs(bugs: bug[], projectID: number): Promise<boolean> {
+    //first Delete all bugs of a project
+    await deleteAllBugs(projectID)
+    //then add Bugs in the db from the bugs array
+    const loadedProj = await Project.load([projectID])
+    let bugIDs: number[] = []
+    for (let x = 0; x < bugs.length; x++) {
+        bugIDs.push(bugs[x].id)
     }
-    let singleBug = new Bug(currBug.name, currBug.status, currBug.severity, currBug.note)    
-    await singleBug.save(projectID)
-  }
-  return true
+    for (let i = 0; i < bugs.length; i++) {
+        let currBug = bugs[i]
+        if (!bugIDs.includes(currBug.id)) {
+            continue
+        }
+        let singleBug = new Bug(
+            currBug.name,
+            currBug.status,
+            currBug.severity,
+            currBug.note
+        )
+        await singleBug.save(projectID)
+    }
+    return true
 }
 
-async function deleteAllBugs(projectID:number){
-   await new pgQuery('DELETE FROM public."Bug" WHERE "projectID" =$1',[projectID]).exec()
-   return true
+async function deleteAllBugs(projectID: number) {
+    await new pgQuery('DELETE FROM public."Bug" WHERE "projectID" =$1', [
+        projectID,
+    ]).exec()
+    return true
 }

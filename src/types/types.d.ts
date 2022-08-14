@@ -1,86 +1,78 @@
-import { FieldDef, QueryResult, QueryResultRow } from "pg";
+import { FieldDef, QueryResult, QueryResultRow } from "pg"
 
-import { Request, Response } from "express";
-import session, { Session, SessionData } from "express-session";
+import { Request, Response } from "express"
+import session, { Session, SessionData } from "express-session"
 
 declare global {
+    type generatedUpdate = {
+        sql: string
+        values: any[]
+    }
 
+    interface jsonResponse {
+        err: boolean
+        data: string | QueryResultRow | null
+    }
 
+    type Send<T = Response> = (body?: jsonResponse) => T
 
-  type generatedUpdate = {
-    sql: string;
-    values: any[];
-  };
+    interface CustomResponse extends Response {
+        json: Send<this>
+    }
 
-  interface jsonResponse {
-    err: boolean;
-    data: string | QueryResultRow | null;
-  }
+    interface project extends projectNoStats {
+        bugStats: bugStats
+    }
 
-  type Send<T = Response> = (body?: jsonResponse) => T;
+    interface projectNoStats {
+        id: number
+        name: string
+        bugs: bug[]
+    }
 
-  interface CustomResponse extends Response {
-    json: Send<this>;
-  }
+    interface bug {
+        id: number
+        name: string
+        status: bugStatus
+        severity: bugSeverity
+        note: string | null
+    }
 
-  interface project extends projectNoStats{
-    bugStats:bugStats
-}
+    interface projectQueryReturn {
+        projectID: number
+        projectName: string
+        bugID: number
+        bugName: string
+        severity: bugSeverity
+        status: bugStatus
+        note: null | string
+    }
 
-interface projectNoStats{
-  id:number,
-  name:string,
-  bugs:bug[]
-}
+    interface bugStats {
+        open: number
+        highPriority: number
+        mediumPriority: number
+        lowPriority: number
+    }
 
-interface bug{
-    id:number,
-    name:string,
-    status:bugStatus,
-    severity:bugSeverity,
-    note:string | null,
-}
+    type bugStatus = "Open" | "Testing" | "Closed"
 
-interface projectQueryReturn{
-  projectID:number,
-  projectName:string,
-  bugID:number,
-  bugName:string,
-  severity:bugSeverity,
-  status:bugStatus,
-  note:null | string
-}
+    type bugSeverity = "Low" | "Medium" | "High"
 
+    interface userNoPassword {
+        userID: number
+        username: string
+    }
 
-
-interface bugStats{
-    open:number,
-    highPriority:number,
-    mediumPriority:number,
-    lowPriority:number
-}
-
-type bugStatus = "Open"  | "Testing" | "Closed"
-
-type bugSeverity = "Low" | "Medium" | "High"
-
-
-
-interface userNoPassword{
-  userID:number,
-  username:string
-}
-
-interface user extends userNoPassword{
-  password:string
-}
-
+    interface user extends userNoPassword {
+        password: string
+    }
 }
 declare module "express-session" {
-  interface SessionData {
-    userID:number
-  }
+    interface SessionData {
+        userID: number
+    }
 }
-interface idArrayRequest extends Request{
-    idArray?:number[]
+interface idArrayRequest extends Request {
+    idArray?: number[]
 }
