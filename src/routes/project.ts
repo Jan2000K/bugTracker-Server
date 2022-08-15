@@ -70,7 +70,6 @@ projectRouter.post(
     }
 )
 
-
 /*
 Example Patch updateName JSON
 {
@@ -94,7 +93,6 @@ projectRouter.patch("/updateName", checkSession, async (req, res, next) => {
         })
     }
 })
-
 
 /*
 Example Patch JSON

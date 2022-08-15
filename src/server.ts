@@ -42,10 +42,10 @@ app.use(express.json())
 
 app.disable("x-powered-by")
 
-app.use("api/project", projectRouter)
+app.use("/project", projectRouter)
 
-app.use("api/bug", bugRouter)
+app.use("/bug", bugRouter)
 
-app.use("api/user", userRouter)
+app.use("/user", userRouter)
 
 app.listen(port, () => console.log("Server is runnning on port " + port))

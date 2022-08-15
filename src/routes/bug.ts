@@ -10,8 +10,6 @@ import {
 import { idArrayRequest } from "../types/types"
 const bugRouter = Router()
 
-
-
 /*
 Example Patch JSON 
   "id": 2
@@ -42,7 +40,6 @@ bugRouter.patch(
         }
     }
 )
-
 
 /*
 Example Patch JSON 
